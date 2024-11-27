@@ -8,7 +8,7 @@ interface BankContextType {
 const BankContext = createContext<BankContextType | undefined>(undefined);
 
 export const BankProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [totalCollected, setTotalCollected] = useState(0);
+    const [totalCollected, setTotalCollected] = useState<number>(0);
     const goal = 750000;
 
     // Функция для получения данных с сервера
@@ -30,7 +30,7 @@ export const BankProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 setTotalCollected(result.totalCollected);
             } else {
                 // Если это JSON, просто преобразуем его
-                const result = await response.json();
+                const result = JSON.parse(responseText); // Преобразуем текст в JSON
                 setTotalCollected(result.totalCollected);
             }
         } catch (error) {
