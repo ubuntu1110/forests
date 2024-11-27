@@ -1,9 +1,3 @@
-const express = require('express');
-const cors = require('cors');
-
-const app = express();
-app.use(cors());
-
 let totalCollected = 0; // Начальная сумма
 const goal = 750000; // Целевая сумма
 const newYearTimestamp = new Date(new Date().getFullYear() + 1, 0, 1).getTime(); // Новый год
@@ -42,18 +36,15 @@ setInterval(() => {
     employees.sort((a, b) => b.points - a.points);
 }, 10000);
 
-// Endpoint для получения текущих данных акции
-app.get('/api/contest-data', (req, res) => {
+// Экспорт функции для Vercel API
+export default function handler(req, res) {
     const now = Date.now();
     const timeLeft = Math.max(newYearTimestamp - now, 0); // Время до Нового года в миллисекундах
 
-    res.json({
+    res.status(200).json({
         totalCollected: Math.floor(totalCollected),
         goal,
         employees,
         timeLeft,
     });
-});
-
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
