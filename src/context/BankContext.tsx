@@ -15,11 +15,36 @@ export const BankProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const fetchTotalCollected = async () => {
         try {
             const response = await fetch('/api/contest-data');
-            const data = await response.json();
-            setTotalCollected(data.totalCollected);
+
+            if (!response.ok) {
+                throw new Error(`Ошибка сети: ${response.status}`);
+            }
+
+            const responseText = await response.text();  // Читаем ответ как текст
+
+            // Проверяем, если это HTML
+            if (responseText.startsWith('<!DOCTYPE html>')) {
+                // Это HTML-страница. Попробуем извлечь из нее данные.
+                const jsonString = extractJSONFromHTML(responseText);
+                const result = JSON.parse(jsonString);  // Преобразуем извлеченный текст в JSON
+                setTotalCollected(result.totalCollected);
+            } else {
+                // Если это JSON, просто преобразуем его
+                const result = await response.json();
+                setTotalCollected(result.totalCollected);
+            }
         } catch (error) {
             console.error('Ошибка при получении данных:', error);
         }
+    };
+
+    // Функция для извлечения JSON из HTML
+    const extractJSONFromHTML = (html: string): string => {
+        const match = html.match(/<script id="contest-data">(.+?)<\/script>/);
+        if (match && match[1]) {
+            return match[1];  // Возвращаем извлеченный JSON
+        }
+        throw new Error('Не удалось извлечь JSON из HTML');
     };
 
     useEffect(() => {
