@@ -14,7 +14,7 @@ export const BankProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Функция для получения данных с сервера
     const fetchTotalCollected = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/totalCollected');
+            const response = await fetch('/api/contest-data');
             const data = await response.json();
             setTotalCollected(data.totalCollected);
         } catch (error) {
