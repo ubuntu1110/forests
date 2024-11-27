@@ -22,6 +22,8 @@ export const BankProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
             const responseText = await response.text();  // Читаем ответ как текст
 
+            console.log('Response text:', responseText);  // Логируем для отладки
+
             // Проверяем, если это HTML
             if (responseText.startsWith('<!DOCTYPE html>')) {
                 // Это HTML-страница. Попробуем извлечь из нее данные.
