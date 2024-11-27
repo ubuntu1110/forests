@@ -20,7 +20,7 @@ const ContestPage: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('http://localhost:5000/api/contest-data');
+            const response = await fetch('/api/contest-data');
             const result = await response.json();
             setData(result);
         };
