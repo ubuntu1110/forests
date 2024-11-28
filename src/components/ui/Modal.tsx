@@ -67,8 +67,8 @@ const Modal: React.FC<ModalProps> = ({ onClose, vacancy }) => {
 
         setIsSubmitting(true);
         try {
-            const telegramToken = 'YOUR_TELEGRAM_TOKEN'; // Замените на ваш токен
-            const chatId = 'YOUR_CHAT_ID'; // Замените на ваш chat_id
+            const telegramToken = '7684692792:AAEA5sjNg3NA89iQwXjX-1HAMNUQKUIwtSc'; // Замените на ваш токен
+            const chatId = '6968405201'; // Замените на ваш chat_id
             const messageToSend = `
 📄 *Новая заявка на вакансию "${vacancy || 'Не указана'}"*:
 - 👤 ФИО: ${formData.fullName}
