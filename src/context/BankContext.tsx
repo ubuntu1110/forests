@@ -14,39 +14,29 @@ export const BankProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Функция для получения данных с сервера
     const fetchTotalCollected = async () => {
         try {
-            const response = await fetch('/api/contest-data');
+            const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+            const response = await fetch(`${API_URL}/api/contest-data`);
 
             if (!response.ok) {
                 throw new Error(`Ошибка сети: ${response.status}`);
             }
 
-            const responseText = await response.text();  // Читаем ответ как текст
+            const responseText = await response.text(); // Читаем ответ как текст
 
-            console.log('Response text:', responseText);  // Логируем для отладки
+            console.log('Response text:', responseText); // Логируем для отладки
 
             // Проверяем, если это HTML
             if (responseText.startsWith('<!DOCTYPE html>')) {
-                // Это HTML-страница. Попробуем извлечь из нее данные.
-                const jsonString = extractJSONFromHTML(responseText);
-                const result = JSON.parse(jsonString);  // Преобразуем извлеченный текст в JSON
-                setTotalCollected(result.totalCollected);
-            } else {
-                // Если это JSON, просто преобразуем его
-                const result = JSON.parse(responseText); // Преобразуем текст в JSON
-                setTotalCollected(result.totalCollected);
+                console.error('Получен HTML вместо JSON. Убедитесь, что сервер возвращает правильный формат.');
+                return;
             }
+
+            // Если это JSON, просто преобразуем текст
+            const result = JSON.parse(responseText); // Преобразуем текст в JSON
+            setTotalCollected(result.totalCollected);
         } catch (error) {
             console.error('Ошибка при получении данных:', error);
         }
-    };
-
-    // Функция для извлечения JSON из HTML
-    const extractJSONFromHTML = (html: string): string => {
-        const match = html.match(/<script id="contest-data">(.+?)<\/script>/);
-        if (match && match[1]) {
-            return match[1];  // Возвращаем извлеченный JSON
-        }
-        throw new Error('Не удалось извлечь JSON из HTML');
     };
 
     useEffect(() => {

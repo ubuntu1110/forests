@@ -16,17 +16,26 @@ const ContestBanner: React.FC = () => {
         employees: [],
     });
 
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('/api/contest-data');
-            const result = await response.json();
-            setData(result);
+            try {
+                const response = await fetch(`${API_URL}/api/contest-data`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+                setData(result);
+            } catch (error) {
+                console.error('Ошибка при получении данных:', error);
+            }
         };
 
         fetchData();
-        const interval = setInterval(fetchData, 5000);
-        return () => clearInterval(interval);
-    }, []);
+        const intervalId = setInterval(fetchData, 5000);
+        return () => clearInterval(intervalId);
+    }, [API_URL]);
 
     return (
         <div className="bg-gradient-to-r from-light-green to-dark-bg text-white p-8 rounded-lg shadow-lg text-center">

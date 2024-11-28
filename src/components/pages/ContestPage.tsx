@@ -18,24 +18,43 @@ const ContestPage: React.FC = () => {
         timeLeft: 0,
     });
 
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('/api/contest-data');
-            const result = await response.json();
-            setData(result);
+            try {
+                const response = await fetch(`${API_URL}/api/contest-data`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+                setData(result);
+            } catch (error) {
+                console.error('Ошибка при получении данных:', error);
+            }
         };
 
         fetchData();
-        const interval = setInterval(fetchData, 5000);
-        return () => clearInterval(interval);
-    }, []);
+        const intervalId = setInterval(fetchData, 5000);
+        return () => clearInterval(intervalId);
+    }, [API_URL]);
 
     const timeLeft = new Date(data.timeLeft);
     const days = Math.floor(data.timeLeft / (1000 * 60 * 60 * 24));
     const hours = timeLeft.getUTCHours();
     const minutes = timeLeft.getUTCMinutes();
 
+    const formattedTimeLeft = () => {
+        if (days > 0) return `${days} дней, ${hours} часов, ${minutes} минут`;
+        if (hours > 0) return `${hours} часов, ${minutes} минут`;
+        return `${minutes} минут`;
+    };
+
     const progress = Math.min((data.totalCollected / data.goal) * 100, 100);
+
+    useEffect(() => {
+        document.title = 'Новогодняя акция - Присоединяйтесь!';
+    }, []);
 
     return (
         <div className="p-8 bg-light-green text-dark-bg">
@@ -54,7 +73,7 @@ const ContestPage: React.FC = () => {
                 <p className="mt-4 text-center font-bold text-lg">
                     {data.totalCollected.toLocaleString('ru-RU')} ₽ из {data.goal.toLocaleString('ru-RU')} ₽
                 </p>
-                <p className="text-center mt-2">Осталось: {days} дней, {hours} часов, {minutes} минут</p>
+                <p className="text-center mt-2">Осталось: {formattedTimeLeft()}</p>
             </div>
             <h2 className="text-2xl font-bold text-center mb-4">Топ сотрудников:</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
