@@ -25,8 +25,6 @@ const Modal: React.FC<ModalProps> = ({ onClose, vacancy }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-<<<<<<< HEAD
-=======
         try {
             const telegramToken = '7684692792:AAEA5sjNg3NA89iQwXjX-1HAMNUQKUIwtSc'; // Замените на ваш токен
             const chatId = '6968405201'; // Замените на ваш chat_id
@@ -38,8 +36,6 @@ const Modal: React.FC<ModalProps> = ({ onClose, vacancy }) => {
 - 💬 Мессенджер: ${formData.messenger}
 - 📝 Сообщение: ${formData.message}
             `;
->>>>>>> f211e6cb65f6c6f3e41e089b418d99f849655773
-
         try {
             const response = await fetch('http://localhost:5000/api/send-application', {
                 method: 'POST',
